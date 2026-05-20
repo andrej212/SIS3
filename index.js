@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 const programsRoute = require("./routes/programsRoute.js");
+const blogRoute = require("./routes/blogRoute.js");
 
 const port = process.env.PORT || 5000;
 
@@ -14,7 +15,8 @@ app.get("/",(req,res)=>{
 });
 
 //routes
-app.use("/programs",programsRoute)
+app.use("/programs",programsRoute);
+app.use("/blogs",blogRoute);
 
 app.listen(port ,()=>{
     console.log("server runnning on port:"+ port);
