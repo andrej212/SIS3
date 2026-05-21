@@ -1,6 +1,8 @@
 const express = require("express");
 const programsRouter = express.Router();
 const programsService = require("../services/programService.js");
+const authMiddleware = require("../middleware/authMiddleware.js");
+const isAdmin = require("../middleware/isAdmin.js");
 
 
 programsRouter.get("/", async (req,res)=>{
@@ -26,7 +28,8 @@ programsRouter.get("/:id", async (req,res) => {
     }
 })
 
-programsRouter.post("/", async (req,res)=>{
+programsRouter.post("/", authMiddleware, isAdmin, async (req,res)=>{
+ 
    let {title, description, difficulty, createdBy} = req.body;
 
    let isComplete = title && description && difficulty && createdBy;
@@ -46,12 +49,12 @@ programsRouter.post("/", async (req,res)=>{
    }
 })
 
-programsRouter.delete("/:id", async (req,res) => {
+programsRouter.delete("/:id", authMiddleware, isAdmin, async (req,res) => {
     //mozda kasnije samo arraylength > 0 da vidim je li nasao 
     try{
         const result = await programsService.deleteProgram(req.params.id);
         if(result.affectedRows != 0){
-            res.json({message: `program with deleted`});
+           return res.json({message: `program deleted`});
         }
         return res.status(404).json({message: `Program not found`});
     }
@@ -61,13 +64,12 @@ programsRouter.delete("/:id", async (req,res) => {
     }
 })
 
-programsRouter.put("/:id", async (req, res) => {
+programsRouter.put("/:id", authMiddleware, isAdmin, async (req, res) => {
 
     const { title, description, difficulty } = req.body;
-
-    try {
+    try{
         let result =
-            await programsService.updateProgram(
+            await programsService.editProgram(
                 req.params.id,
                 title,
                 description,

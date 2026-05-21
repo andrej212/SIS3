@@ -42,7 +42,7 @@ const deleteProgram = (id) =>{
 
 const editProgram = (title,description,difficulty,id) => {
     return new Promise ((resolve,reject)=>{
-        db.query(`UPDATE programs SET title = ?, description = ?, difficulty = ?,WHERE id = ?`, [title, description, difficulty, id], (err,res)=>{
+        db.query(`UPDATE programs SET title = ?, description = ?, difficulty = ? WHERE id = ?`, [title, description, difficulty, id], (err,res)=>{
             if(err){return reject (err)}
             resolve(res);
         });

@@ -1,6 +1,8 @@
 const express = require("express");
 const blogRoute = express.Router();
 const blogService = require("../services/blogService.js");
+const authMiddleware = require("../middleware/authMiddleware.js");
+const isAdmin = require("../middleware/isAdmin.js");
 
 
 blogRoute.get("/", async (req,res)=>{
@@ -21,11 +23,12 @@ blogRoute.get("/:id", async (req,res) => {
     }
     catch(err){
         console.log(err);
-        res.sendStatus(err);
+        res.sendStatus(500);
     }
 })
 
-blogRoute.post("/", async (req,res)=>{
+blogRoute.post("/", authMiddleware, isAdmin, async (req,res)=>{
+      
    let {title, pdfUrl, createdBy} = req.body;
 
    let isComplete = title && pdfUrl && createdBy
@@ -45,11 +48,12 @@ blogRoute.post("/", async (req,res)=>{
    }
 })
 
-blogRoute.delete("/:id", async (req,res)=>{
+blogRoute.delete("/:id", authMiddleware, isAdmin, async (req,res)=>{
+
     try{
         let result = await blogService.deleteBlog(req.params.id);
         if(result.affectedRows != 0){
-            return res.status(204).json({message: "blog succesfully deleted"});
+            return res.status(200).json({message: "blog succesfully deleted"});
         }
             res.status(400).json({messge: "blog hasn't been found"});
     }
@@ -59,15 +63,16 @@ blogRoute.delete("/:id", async (req,res)=>{
     }
 })
 
-blogRoute.put("/id", async (req,res)=>{
+blogRoute.put("/:id", authMiddleware, isAdmin, async (req,res)=>{
+
     const {title, pdfUrl, createdBy} = req.body
-    isComplete = title && pdfUrl && createdBy
+    let isComplete = title && pdfUrl && createdBy
 
     if(!isComplete){
         res.status(404).json({message: "missing some attributes for blogs"});
     }
     try{
-        let result = blogService.editBlog(title,pdfUrl,createdBy);
+        let result = await blogService.editBlog(title,pdfUrl,createdBy);
         res.status(200).json({message:"Successfully edite blog"});
     }
     catch(err){
