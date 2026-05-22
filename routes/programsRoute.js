@@ -70,10 +70,10 @@ programsRouter.put("/:id", authMiddleware, isAdmin, async (req, res) => {
     try{
         let result =
             await programsService.editProgram(
-                req.params.id,
                 title,
                 description,
-                difficulty
+                difficulty, 
+                req.params.id
             );
         if(result.affectedRows === 0){
 

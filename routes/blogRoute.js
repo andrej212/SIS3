@@ -66,13 +66,13 @@ blogRoute.delete("/:id", authMiddleware, isAdmin, async (req,res)=>{
 blogRoute.put("/:id", authMiddleware, isAdmin, async (req,res)=>{
 
     const {title, pdfUrl, createdBy} = req.body
-    let isComplete = title && pdfUrl && createdBy
+    let isComplete = title && pdfUrl && createdBy 
 
     if(!isComplete){
         res.status(404).json({message: "missing some attributes for blogs"});
     }
     try{
-        let result = await blogService.editBlog(title,pdfUrl,createdBy);
+        let result = await blogService.editBlog(title,pdfUrl,createdBy,req.params.id);
         res.status(200).json({message:"Successfully edite blog"});
     }
     catch(err){
