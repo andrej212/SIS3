@@ -1,17 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import LoginPage from '../Pages/LoginPage';
+import RegisterPage from '../Pages/RegisterPage';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [screen, setScreen] = useState('login');
 
-  return (
-    <>
-    <h1 className="text-3xl font-bold underline">HI</h1>
-    </>
-  )
+  return screen === 'login' ? (
+    <LoginPage onSwitch={() => setScreen('register')} />
+  ) : (
+    <RegisterPage onSwitch={() => setScreen('login')} />
+  );
 }
 
-export default App
+export default App;
