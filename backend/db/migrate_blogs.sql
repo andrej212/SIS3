@@ -1,0 +1,15 @@
+-- Run these in your MySQL console (database: sys3)
+
+ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+CREATE TABLE IF NOT EXISTS blog_comments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  blog_id INT NOT NULL,
+  user_id INT NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  comment TEXT NOT NULL,
+  reply TEXT DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (blog_id) REFERENCES blog_posts(id) ON DELETE CASCADE
+);

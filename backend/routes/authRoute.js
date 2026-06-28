@@ -22,7 +22,7 @@ authRouter.post("/register", async (req, res) => {
         });
     }catch(err){
         console.log(err);
-        res.sendStatus(500);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
@@ -76,7 +76,7 @@ authRouter.post("/login", async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.sendStatus(500);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 

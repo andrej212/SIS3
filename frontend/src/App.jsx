@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from '../Pages/LoginPage';
 import RegisterPage from '../Pages/RegisterPage';
 import ProgramsPage from '../Pages/ProgramsPage';
+import BlogPage from '../Pages/BlogPage';
+import BlogDetailPage from '../Pages/BlogDetailPage';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -19,6 +21,16 @@ function AppRoutes() {
             <Route path="/programs" element={
                 <ProtectedRoute>
                     <ProgramsPage />
+                </ProtectedRoute>
+            } />
+            <Route path="/blogs" element={
+                <ProtectedRoute>
+                    <BlogPage />
+                </ProtectedRoute>
+            } />
+            <Route path="/blogs/:id" element={
+                <ProtectedRoute>
+                    <BlogDetailPage />
                 </ProtectedRoute>
             } />
         </Routes>

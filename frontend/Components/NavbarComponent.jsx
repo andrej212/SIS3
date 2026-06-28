@@ -21,6 +21,11 @@ function NavbarComponent() {
                         Programs
                     </Link>
                 </li>
+                <li>
+                    <Link to="/blogs" className="text-gray-300 hover:text-white no-underline text-sm font-medium">
+                        Blog
+                    </Link>
+                </li>
             </ul>
             <div className="flex items-center gap-4">
                 {user && (
