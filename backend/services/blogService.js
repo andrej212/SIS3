@@ -33,9 +33,12 @@ const createBlog = (title, content, pdfUrl, createdBy) => {
 
 const deleteBlog = (id) => {
     return new Promise((resolve, reject) => {
-        db.query("DELETE FROM blog_posts WHERE id = ?", [id], (err, res) => {
+        db.query("DELETE FROM blog_comments WHERE blog_id = ?", [id], (err) => {
             if(err){return reject(err);}
-            resolve(res);
+            db.query("DELETE FROM blog_posts WHERE id = ?", [id], (err, res) => {
+                if(err){return reject(err);}
+                resolve(res);
+            });
         });
     });
 };

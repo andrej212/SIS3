@@ -77,10 +77,14 @@ function BlogPage() {
         e.stopPropagation();
         if (!window.confirm('Delete this blog post?')) return;
         try {
-            await fetch(`http://localhost:5000/blogs/${id}`, {
+            const res = await fetch(`http://localhost:5000/blogs/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
+            if (!res.ok) {
+                alert('Failed to delete blog.');
+                return;
+            }
             fetchBlogs();
         } catch {
             alert('Failed to delete blog.');

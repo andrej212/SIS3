@@ -5,6 +5,7 @@ import RegisterPage from '../Pages/RegisterPage';
 import ProgramsPage from '../Pages/ProgramsPage';
 import BlogPage from '../Pages/BlogPage';
 import BlogDetailPage from '../Pages/BlogDetailPage';
+import MembersPage from '../Pages/MembersPage';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -31,6 +32,11 @@ function AppRoutes() {
             <Route path="/blogs/:id" element={
                 <ProtectedRoute>
                     <BlogDetailPage />
+                </ProtectedRoute>
+            } />
+            <Route path="/members" element={
+                <ProtectedRoute>
+                    <MembersPage />
                 </ProtectedRoute>
             } />
         </Routes>

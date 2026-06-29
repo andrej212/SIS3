@@ -35,14 +35,14 @@ blogRoute.get("/:id", async (req, res) => {
 });
 
 blogRoute.post("/", authMiddleware, isAdmin, async (req, res) => {
-    const { title, content, pdfUrl, createdBy } = req.body;
+    const { title, content, pdfUrl } = req.body;
 
-    if (!title || !content || !createdBy) {
-        return res.status(400).json({ message: "Missing required fields: title, content, createdBy" });
+    if (!title || !content) {
+        return res.status(400).json({ message: "Missing required fields: title, content" });
     }
 
     try {
-        const result = await blogService.createBlog(title, content, pdfUrl, createdBy);
+        const result = await blogService.createBlog(title, content, pdfUrl, req.user.username);
         res.json(result);
     } catch(err) {
         console.log(err);
@@ -65,13 +65,13 @@ blogRoute.put("/comments/:commentId/reply", authMiddleware, isAdmin, async (req,
 });
 
 blogRoute.put("/:id", authMiddleware, isAdmin, async (req, res) => {
-    const { title, content, pdfUrl, createdBy } = req.body;
+    const { title, content, pdfUrl } = req.body;
 
-    if (!title || !content || !createdBy) {
+    if (!title || !content) {
         return res.status(400).json({ message: "Missing required fields" });
     }
     try {
-        await blogService.editBlog(title, content, pdfUrl, createdBy, req.params.id);
+        await blogService.editBlog(title, content, pdfUrl, req.user.username, req.params.id);
         res.status(200).json({ message: "Successfully edited blog" });
     } catch(err) {
         console.log(err);
