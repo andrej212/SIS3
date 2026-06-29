@@ -25,6 +25,7 @@ function MembersPage() {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [fetchError, setFetchError] = useState('');
+    const [search, setSearch] = useState('');
 
     const [showAddForm, setShowAddForm] = useState(false);
     const [addForm, setAddForm] = useState({ name: '', surname: '', startDate: '' });
@@ -232,6 +233,22 @@ function MembersPage() {
                     </div>
                 )}
 
+                <input
+                    type="text"
+                    placeholder="Search members..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '10px',
+                        border: '1px solid #d1d5db',
+                        marginBottom: '24px',
+                        fontSize: '1rem',
+                        boxSizing: 'border-box',
+                    }}
+                />
+
                 {loading && <p style={{ color: '#6b7280' }}>Loading members...</p>}
                 {fetchError && <p style={{ color: '#b91c1c' }}>{fetchError}</p>}
 
@@ -256,7 +273,10 @@ function MembersPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {members.map((m, i) => {
+                                    {members.filter(m =>
+                                        m.name.toLowerCase().includes(search.toLowerCase()) ||
+                                        m.surname.toLowerCase().includes(search.toLowerCase())
+                                    ).map((m, i) => {
                                         const expired = isExpired(m.end_date);
                                         const rowBg = expired ? '#fef2f2' : i % 2 === 0 ? '#fff' : '#fafafa';
                                         const textColor = expired ? '#991b1b' : '#111827';

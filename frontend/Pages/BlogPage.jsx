@@ -10,6 +10,7 @@ function BlogPage() {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [search, setSearch] = useState('');
 
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({ title: '', content: '', pdfUrl: '' });
@@ -120,6 +121,21 @@ function BlogPage() {
                         </button>
                     )}
                 </div>
+                <input
+                type='text'
+                placeholder='Search blogs'
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '10px',
+                        border: '1px solid #d1d5db',
+                        marginBottom: '24px',
+                        fontSize: '1rem',
+                        boxSizing: 'border-box',
+                    }}
+                ></input>
 
                 {user?.role === 'admin' && showForm && (
                     <div style={{
@@ -215,7 +231,7 @@ function BlogPage() {
                 )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {blogs.map(blog => (
+                    {blogs.filter(b => b.title.toLowerCase().includes(search.toLowerCase())).map(blog => (
                         <div
                             key={blog.id}
                             onClick={() => navigate(`/blogs/${blog.id}`)}

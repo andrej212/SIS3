@@ -14,6 +14,7 @@ function ProgramsPage() {
     const [programs, setPrograms] = useState([]);
     const [loadingPrograms, setLoadingPrograms] = useState(true);
     const [fetchError, setFetchError] = useState('');
+    const [search, setSearch] = useState('');
 
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({ title: '', description: '', difficulty: 'Easy' });
@@ -87,7 +88,7 @@ function ProgramsPage() {
             <NavbarComponent />
             <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: 0 }}>Programs</h1>
                     {user?.role === 'admin' && (
                         <button
@@ -195,6 +196,22 @@ function ProgramsPage() {
                     </div>
                 )}
 
+                <input
+                    type="text"
+                    placeholder="Search programs..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '10px',
+                        border: '1px solid #d1d5db',
+                        marginBottom: '24px',
+                        fontSize: '1rem',
+                        boxSizing: 'border-box',
+                    }}
+                />
+
                 {loadingPrograms && <p style={{ color: '#6b7280' }}>Loading programs...</p>}
                 {fetchError && <p style={{ color: '#b91c1c' }}>{fetchError}</p>}
                 {!loadingPrograms && !fetchError && programs.length === 0 && (
@@ -206,7 +223,10 @@ function ProgramsPage() {
                     gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
                     gap: '20px',
                 }}>
-                    {programs.map(program => (
+                    {programs.filter(p =>
+                        p.title.toLowerCase().includes(search.toLowerCase()) ||
+                        p.description.toLowerCase().includes(search.toLowerCase())
+                    ).map(program => (
                         <div
                             key={program.id}
                             style={{
