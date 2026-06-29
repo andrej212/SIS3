@@ -50,7 +50,7 @@ blogRoute.post("/", authMiddleware, isAdmin, async (req, res) => {
     }
 });
 
-blogRoute.put("/comments/:commentId/reply", authMiddleware, isAdmin, async (req, res) => {
+blogRoute.put("/comments/:commentId/reply", authMiddleware, async (req, res) => {
     const { reply } = req.body;
     if (!reply || !reply.trim()) {
         return res.status(400).json({ message: "Reply cannot be empty" });
