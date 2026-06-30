@@ -32,6 +32,12 @@ function MembersPage() {
     const [addLoading, setAddLoading] = useState(false);
     const [addError, setAddError] = useState('');
 
+    const [showEmpForm, setShowEmpForm] = useState(false);
+    const [empForm, setEmpForm] = useState({ username: '', email: '', password: '' });
+    const [empLoading, setEmpLoading] = useState(false);
+    const [empError, setEmpError] = useState('');
+    const [empSuccess, setEmpSuccess] = useState('');
+
     const [editingId, setEditingId] = useState(null);
     const [editDate, setEditDate] = useState('');
     const [editLoading, setEditLoading] = useState(false);
@@ -140,6 +146,38 @@ function MembersPage() {
         }
     }
 
+    async function handleAddEmployee(e) {
+        e.preventDefault();
+        setEmpError('');
+        setEmpSuccess('');
+        if (!empForm.username.trim() || !empForm.email.trim() || !empForm.password.trim()) {
+            setEmpError('All fields are required.');
+            return;
+        }
+        setEmpLoading(true);
+        try {
+            const res = await fetch('http://localhost:5000/auth/create-employee', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(empForm),
+            });
+            if (res.ok) {
+                setEmpForm({ username: '', email: '', password: '' });
+                setEmpSuccess(`Employee "${empForm.username}" created successfully.`);
+            } else {
+                const d = await res.json();
+                setEmpError(d.message || 'Failed to create employee.');
+            }
+        } catch {
+            setEmpError('Unable to reach server.');
+        } finally {
+            setEmpLoading(false);
+        }
+    }
+
     function startEdit(member) {
         setEditingId(member.id);
         setEditDate(toInputDate(member.start_date));
@@ -153,23 +191,104 @@ function MembersPage() {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
                     <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: 0 }}>Members</h1>
-                    {canManage && (
-                        <button
-                            onClick={() => { setShowAddForm(prev => !prev); setAddError(''); }}
-                            style={{
-                                padding: '10px 20px',
-                                borderRadius: '10px',
-                                border: 'none',
-                                background: showAddForm ? '#6b7280' : '#2563eb',
-                                color: '#fff',
-                                fontWeight: 700,
-                                cursor: 'pointer',
-                            }}
-                        >
-                            {showAddForm ? 'Cancel' : '+ Add Member'}
-                        </button>
-                    )}
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        {canManage && (
+                            <button
+                                onClick={() => { setShowAddForm(prev => !prev); setAddError(''); setShowEmpForm(false); }}
+                                style={{
+                                    padding: '10px 20px',
+                                    borderRadius: '10px',
+                                    border: 'none',
+                                    background: showAddForm ? '#6b7280' : '#2563eb',
+                                    color: '#fff',
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                {showAddForm ? 'Cancel' : '+ Add Member'}
+                            </button>
+                        )}
+                        {user?.role === 'admin' && (
+                            <button
+                                onClick={() => { setShowEmpForm(prev => !prev); setEmpError(''); setEmpSuccess(''); setShowAddForm(false); }}
+                                style={{
+                                    padding: '10px 20px',
+                                    borderRadius: '10px',
+                                    border: 'none',
+                                    background: showEmpForm ? '#6b7280' : '#16a34a',
+                                    color: '#fff',
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                {showEmpForm ? 'Cancel' : '+ Add Employee'}
+                            </button>
+                        )}
+                    </div>
                 </div>
+
+                {user?.role === 'admin' && showEmpForm && (
+                    <div style={{
+                        background: '#fff',
+                        borderRadius: '16px',
+                        padding: '24px',
+                        boxShadow: '0 4px 16px rgba(16,24,40,0.08)',
+                        marginBottom: '28px',
+                    }}>
+                        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827', marginTop: 0, marginBottom: '20px' }}>
+                            New Employee Account
+                        </h2>
+                        <form onSubmit={handleAddEmployee} style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-end' }}>
+                            <div style={{ flex: '1 1 160px' }}>
+                                <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, color: '#374151', fontSize: '0.9rem' }}>Username</label>
+                                <input
+                                    type="text"
+                                    value={empForm.username}
+                                    onChange={e => setEmpForm({ ...empForm, username: e.target.value })}
+                                    style={inputStyle}
+                                />
+                            </div>
+                            <div style={{ flex: '1 1 160px' }}>
+                                <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, color: '#374151', fontSize: '0.9rem' }}>Email</label>
+                                <input
+                                    type="email"
+                                    value={empForm.email}
+                                    onChange={e => setEmpForm({ ...empForm, email: e.target.value })}
+                                    style={inputStyle}
+                                />
+                            </div>
+                            <div style={{ flex: '1 1 160px' }}>
+                                <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600, color: '#374151', fontSize: '0.9rem' }}>Password</label>
+                                <input
+                                    type="text"
+                                    value={empForm.password}
+                                    onChange={e => setEmpForm({ ...empForm, password: e.target.value })}
+                                    style={inputStyle}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '0 0 auto', paddingBottom: '1px' }}>
+                                <button
+                                    type="submit"
+                                    disabled={empLoading}
+                                    style={{
+                                        padding: '10px 22px',
+                                        borderRadius: '10px',
+                                        border: 'none',
+                                        background: '#16a34a',
+                                        color: '#fff',
+                                        fontWeight: 700,
+                                        cursor: empLoading ? 'default' : 'pointer',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {empLoading ? 'Creating...' : 'Create Employee'}
+                                </button>
+                                {empError && <span style={{ color: '#b91c1c', fontSize: '0.9rem' }}>{empError}</span>}
+                                {empSuccess && <span style={{ color: '#16a34a', fontSize: '0.9rem' }}>{empSuccess}</span>}
+                            </div>
+                        </form>
+                    </div>
+                )}
 
                 {canManage && showAddForm && (
                     <div style={{

@@ -2,6 +2,8 @@ const express = require("express");
 const authRouter = express.Router();
 const authService = require("../services/authService.js")
 const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middleware/authMiddleware.js");
+const isAdmin = require("../middleware/isAdmin.js");
 
 // REGISTER
 authRouter.post("/register", async (req, res) => {
@@ -77,6 +79,24 @@ authRouter.post("/login", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// CREATE EMPLOYEE (admin only)
+authRouter.post("/create-employee", authMiddleware, isAdmin, async (req, res) => {
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: "Missing fields" });
+    }
+    try {
+        const result = await authService.createEmployee(username, email, password);
+        res.status(201).json({ message: "Employee created", userId: result.insertId });
+    } catch (err) {
+        if (err.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({ message: "Username or email already exists." });
+        }
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
     }
 });
 
