@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../src/context/AuthContext';
 import NavbarComponent from '../Components/NavbarComponent';
 
@@ -10,6 +11,7 @@ const difficultyStyle = {
 
 function ProgramsPage() {
     const { user, token } = useAuth();
+    const navigate = useNavigate();
 
     const [programs, setPrograms] = useState([]);
     const [loadingPrograms, setLoadingPrograms] = useState(true);
@@ -261,11 +263,13 @@ function ProgramsPage() {
                     ).map(program => (
                         <div
                             key={program.id}
+                            onClick={() => navigate(`/programs/${program.id}`)}
                             style={{
                                 background: '#fff',
                                 borderRadius: '16px',
                                 padding: '20px',
                                 boxShadow: '0 4px 16px rgba(16,24,40,0.07)',
+                                cursor: 'pointer',
                             }}
                         >
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
@@ -285,7 +289,9 @@ function ProgramsPage() {
                                 </span>
                             </div>
                             <p style={{ color: '#6b7280', fontSize: '0.92rem', margin: '0 0 14px 0', lineHeight: 1.6 }}>
-                                {program.description}
+                                {program.description.length > 120
+                                    ? `${program.description.slice(0, 120).trim()}...`
+                                    : program.description}
                             </p>
 
                             {user?.role === 'admin' && (
@@ -302,7 +308,7 @@ function ProgramsPage() {
                                     return (
                                         <span
                                             key={star}
-                                            onClick={() => handleRate(program.id, star)}
+                                            onClick={(e) => { e.stopPropagation(); handleRate(program.id, star); }}
                                             onMouseEnter={() => setHovered(prev => ({ ...prev, [program.id]: star }))}
                                             onMouseLeave={() => setHovered(prev => { const n = {...prev}; delete n[program.id]; return n; })}
                                             style={{

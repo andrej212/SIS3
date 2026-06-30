@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from '../Pages/LoginPage';
 import RegisterPage from '../Pages/RegisterPage';
 import ProgramsPage from '../Pages/ProgramsPage';
+import ProgramDetailPage from '../Pages/ProgramDetailPage';
 import BlogPage from '../Pages/BlogPage';
 import BlogDetailPage from '../Pages/BlogDetailPage';
 import MembersPage from '../Pages/MembersPage';
@@ -31,6 +32,11 @@ function AppRoutes() {
             <Route path="/programs" element={
                 <ProtectedRoute>
                     <ProgramsPage />
+                </ProtectedRoute>
+            } />
+            <Route path="/programs/:id" element={
+                <ProtectedRoute>
+                    <ProgramDetailPage />
                 </ProtectedRoute>
             } />
             <Route path="/blogs" element={
