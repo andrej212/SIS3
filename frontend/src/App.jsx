@@ -15,6 +15,13 @@ function ProtectedRoute({ children }) {
     return token ? children : <Navigate to="/login" replace />;
 }
 
+function StaffRoute({ children }) {
+    const { token, user } = useAuth();
+    if (!token) return <Navigate to="/login" replace />;
+    if (user?.role !== 'admin' && user?.role !== 'employee') return <Navigate to="/programs" replace />;
+    return children;
+}
+
 function AppRoutes() {
     return (
         <Routes>
@@ -37,9 +44,9 @@ function AppRoutes() {
                 </ProtectedRoute>
             } />
             <Route path="/members" element={
-                <ProtectedRoute>
+                <StaffRoute>
                     <MembersPage />
-                </ProtectedRoute>
+                </StaffRoute>
             } />
             <Route path="/forum" element={
                 <ProtectedRoute>

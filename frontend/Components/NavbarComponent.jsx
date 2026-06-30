@@ -26,11 +26,13 @@ function NavbarComponent() {
                         Blog
                     </Link>
                 </li>
-                <li>
-                    <Link to="/members" className="text-gray-300 hover:text-white no-underline text-sm font-medium">
-                        Members
-                    </Link>
-                </li>
+                {(user?.role === 'admin' || user?.role === 'employee') && (
+                    <li>
+                        <Link to="/members" className="text-gray-300 hover:text-white no-underline text-sm font-medium">
+                            Members
+                        </Link>
+                    </li>
+                )}
                 <li>
                     <Link to="/forum" className="text-gray-300 hover:text-white no-underline text-sm font-medium">
                         Forum
