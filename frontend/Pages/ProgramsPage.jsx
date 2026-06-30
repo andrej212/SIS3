@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../src/context/AuthContext';
 import NavbarComponent from '../Components/NavbarComponent';
 
@@ -30,7 +30,7 @@ function ProgramsPage() {
 
     async function fetchUserRatings() {
         try {
-            const res = await fetch('http://localhost:5000/programs/my-ratings', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/programs/my-ratings`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
@@ -42,7 +42,7 @@ function ProgramsPage() {
 
     async function handleRate(programId, rating) {
         try {
-            const res = await fetch(`http://localhost:5000/programs/${programId}/rate`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/programs/${programId}/rate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ function ProgramsPage() {
     async function fetchPrograms() {
         setLoadingPrograms(true);
         try {
-            const res = await fetch('http://localhost:5000/programs');
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/programs`);
             const data = await res.json();
             setPrograms(data);
         } catch {
@@ -81,7 +81,7 @@ function ProgramsPage() {
 
         setFormLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/programs', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/programs`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -312,7 +312,7 @@ function ProgramsPage() {
                                                 lineHeight: 1,
                                             }}
                                         >
-                                            ★
+                                            â…
                                         </span>
                                     );
                                 })}

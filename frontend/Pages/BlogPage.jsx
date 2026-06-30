@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../src/context/AuthContext';
 import NavbarComponent from '../Components/NavbarComponent';
@@ -24,7 +24,7 @@ function BlogPage() {
     async function fetchBlogs() {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/blogs');
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/blogs`);
             const data = await res.json();
             setBlogs(data);
         } catch {
@@ -45,7 +45,7 @@ function BlogPage() {
 
         setFormLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/blogs', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/blogs`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ function BlogPage() {
         e.stopPropagation();
         if (!window.confirm('Delete this blog post?')) return;
         try {
-            const res = await fetch(`http://localhost:5000/blogs/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/blogs/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });

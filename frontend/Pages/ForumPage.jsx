@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../src/context/AuthContext';
 import NavbarComponent from '../Components/NavbarComponent';
@@ -24,7 +24,7 @@ function ForumPage() {
     async function fetchThreads() {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/forum');
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/forum`);
             const data = await res.json();
             setThreads(data);
         } catch {
@@ -43,7 +43,7 @@ function ForumPage() {
         }
         setFormLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/forum', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/forum`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

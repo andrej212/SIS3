@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../src/context/AuthContext';
 import NavbarComponent from '../Components/NavbarComponent';
@@ -30,7 +30,7 @@ function ForumThreadPage() {
     async function fetchThread() {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/forum/${id}`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/forum/${id}`);
             if (!res.ok) { setThread(null); return; }
             const data = await res.json();
             setThread(data.thread);
@@ -48,7 +48,7 @@ function ForumThreadPage() {
         if (!newPost.trim()) { setPostError('Reply cannot be empty.'); return; }
         setPostLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/forum/${id}/posts`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/forum/${id}/posts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ content: newPost }),
@@ -71,7 +71,7 @@ function ForumThreadPage() {
         e.preventDefault();
         if (!editTitle.trim() || !editContent.trim()) return;
         try {
-            const res = await fetch(`http://localhost:5000/forum/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/forum/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ title: editTitle.trim(), content: editContent.trim() }),
@@ -86,7 +86,7 @@ function ForumThreadPage() {
     async function handleDeleteThread() {
         if (!window.confirm('Delete this thread and all its replies?')) return;
         try {
-            const res = await fetch(`http://localhost:5000/forum/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/forum/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -97,7 +97,7 @@ function ForumThreadPage() {
     async function handleEditPost(postId) {
         if (!editPostContent.trim()) return;
         try {
-            const res = await fetch(`http://localhost:5000/forum/posts/${postId}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/forum/posts/${postId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ content: editPostContent.trim() }),
@@ -113,7 +113,7 @@ function ForumThreadPage() {
     async function handleDeletePost(postId) {
         if (!window.confirm('Delete this reply?')) return;
         try {
-            await fetch(`http://localhost:5000/forum/posts/${postId}`, {
+            await fetch(`${import.meta.env.VITE_API_URL}/forum/posts/${postId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -163,7 +163,7 @@ function ForumThreadPage() {
                     onClick={() => navigate('/forum')}
                     style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.9rem', padding: 0, marginBottom: '20px' }}
                 >
-                    ← Back to Forum
+                    â† Back to Forum
                 </button>
 
                 {/* Thread */}
@@ -198,7 +198,7 @@ function ForumThreadPage() {
                                 )}
                             </div>
                             <p style={{ color: '#6b7280', fontSize: '0.85rem', margin: '0 0 20px' }}>
-                                by <strong style={{ color: '#374151' }}>{thread.username}</strong> · {new Date(thread.created_at).toLocaleDateString()}
+                                by <strong style={{ color: '#374151' }}>{thread.username}</strong> Â· {new Date(thread.created_at).toLocaleDateString()}
                             </p>
                             <div style={{ color: '#374151', fontSize: '1rem', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{thread.content}</div>
                         </>

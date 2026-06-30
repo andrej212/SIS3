@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../src/context/AuthContext';
 import NavbarComponent from '../Components/NavbarComponent';
@@ -30,7 +30,7 @@ function BlogDetailPage() {
     async function fetchBlog() {
         setBlogLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/blogs/${id}`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/blogs/${id}`);
             const data = await res.json();
             setBlog(data[0] || null);
         } catch {
@@ -43,7 +43,7 @@ function BlogDetailPage() {
     async function fetchComments() {
         setCommentsLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/blogs/${id}/comments`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/blogs/${id}/comments`);
             const data = await res.json();
             setComments(data);
         } catch {
@@ -62,7 +62,7 @@ function BlogDetailPage() {
         }
         setCommentLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/blogs/${id}/comments`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/blogs/${id}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ function BlogDetailPage() {
         if (!replyText.trim()) return;
         setReplyLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/blogs/comments/${commentId}/reply`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/blogs/comments/${commentId}/reply`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ function BlogDetailPage() {
     async function handleDeleteComment(commentId) {
         if (!window.confirm('Delete this comment?')) return;
         try {
-            await fetch(`http://localhost:5000/blogs/comments/${commentId}`, {
+            await fetch(`${import.meta.env.VITE_API_URL}/blogs/comments/${commentId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -171,7 +171,7 @@ function BlogDetailPage() {
                         marginBottom: '20px',
                     }}
                 >
-                    ← Back to Blog
+                    â† Back to Blog
                 </button>
 
                 {/* Blog content */}
@@ -218,7 +218,7 @@ function BlogDetailPage() {
                     Comments ({comments.length})
                 </h2>
 
-                {/* Post comment form — visible to all logged-in users */}
+                {/* Post comment form â€” visible to all logged-in users */}
                 {token && (
                     <form onSubmit={handleAddComment} style={{
                         background: '#fff',

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../src/context/AuthContext';
 import NavbarComponent from '../Components/NavbarComponent';
 
@@ -51,7 +51,7 @@ function MembersPage() {
         setLoading(true);
         setFetchError('');
         try {
-            const res = await fetch('http://localhost:5000/members', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/members`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
@@ -80,7 +80,7 @@ function MembersPage() {
         }
         setAddLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/members', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/members`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ function MembersPage() {
         }
         setEditLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/members/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/members/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ function MembersPage() {
     async function handleDelete(id) {
         if (!window.confirm('Remove this member?')) return;
         try {
-            await fetch(`http://localhost:5000/members/${id}`, {
+            await fetch(`${import.meta.env.VITE_API_URL}/members/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -156,7 +156,7 @@ function MembersPage() {
         }
         setEmpLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/auth/create-employee', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/create-employee`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
