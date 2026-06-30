@@ -312,7 +312,7 @@ function ProgramsPage() {
                                                 lineHeight: 1,
                                             }}
                                         >
-                                            â…
+                                            &#9733;
                                         </span>
                                     );
                                 })}
