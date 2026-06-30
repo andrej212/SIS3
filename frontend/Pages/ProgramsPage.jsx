@@ -15,6 +15,8 @@ function ProgramsPage() {
     const [loadingPrograms, setLoadingPrograms] = useState(true);
     const [fetchError, setFetchError] = useState('');
     const [search, setSearch] = useState('');
+    const [userRatings, setUserRatings] = useState({});
+    const [hovered, setHovered] = useState({});
 
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({ title: '', description: '', difficulty: 'Easy' });
@@ -23,7 +25,37 @@ function ProgramsPage() {
 
     useEffect(() => {
         fetchPrograms();
+        if (token) fetchUserRatings();
     }, []);
+
+    async function fetchUserRatings() {
+        try {
+            const res = await fetch('http://localhost:5000/programs/my-ratings', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            const map = {};
+            data.forEach(r => { map[r.program_id] = r.rating; });
+            setUserRatings(map);
+        } catch {}
+    }
+
+    async function handleRate(programId, rating) {
+        try {
+            const res = await fetch(`http://localhost:5000/programs/${programId}/rate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ rating }),
+            });
+            if (res.ok) {
+                setUserRatings(prev => ({ ...prev, [programId]: rating }));
+                fetchPrograms();
+            }
+        } catch {}
+    }
 
     async function fetchPrograms() {
         setLoadingPrograms(true);
@@ -252,9 +284,39 @@ function ProgramsPage() {
                                     {program.difficulty}
                                 </span>
                             </div>
-                            <p style={{ color: '#6b7280', fontSize: '0.92rem', margin: 0, lineHeight: 1.6 }}>
+                            <p style={{ color: '#6b7280', fontSize: '0.92rem', margin: '0 0 14px 0', lineHeight: 1.6 }}>
                                 {program.description}
                             </p>
+
+                            {user?.role === 'admin' && (
+                                <div style={{ fontSize: '0.85rem', color: '#92400e', fontWeight: 600, marginBottom: '10px' }}>
+                                    {program.avg_rating
+                                        ? `Avg rating: ${program.avg_rating} / 5 (${program.rating_count} vote${program.rating_count !== 1 ? 's' : ''})`
+                                        : 'No ratings yet'}
+                                </div>
+                            )}
+
+                            <div style={{ display: 'flex', gap: '4px' }}>
+                                {[1, 2, 3, 4, 5].map(star => {
+                                    const filled = star <= (hovered[program.id] ?? userRatings[program.id] ?? 0);
+                                    return (
+                                        <span
+                                            key={star}
+                                            onClick={() => handleRate(program.id, star)}
+                                            onMouseEnter={() => setHovered(prev => ({ ...prev, [program.id]: star }))}
+                                            onMouseLeave={() => setHovered(prev => { const n = {...prev}; delete n[program.id]; return n; })}
+                                            style={{
+                                                fontSize: '1.4rem',
+                                                cursor: 'pointer',
+                                                color: filled ? '#f59e0b' : '#d1d5db',
+                                                lineHeight: 1,
+                                            }}
+                                        >
+                                            ★
+                                        </span>
+                                    );
+                                })}
+                            </div>
                         </div>
                     ))}
                 </div>

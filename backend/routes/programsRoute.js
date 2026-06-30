@@ -16,8 +16,18 @@ programsRouter.get("/", async (req,res)=>{
     }
 });
 
+programsRouter.get("/my-ratings", authMiddleware, async (req, res) => {
+    try {
+        const ratings = await programsService.getUserRatings(req.user.id);
+        res.json(ratings);
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+});
+
 programsRouter.get("/:id", async (req,res) => {
-    //mozda kasnije samo arraylength > 0 da vidim je li nasao 
+    //mozda kasnije samo arraylength > 0 da vidim je li nasao
     try{
         const program = await programsService.getSingleProgram(req.params.id);
         res.json(program);
@@ -85,6 +95,20 @@ programsRouter.put("/:id", authMiddleware, isAdmin, async (req, res) => {
             message: "Program updated"
         });
     }catch(err){
+        console.log(err);
+        res.sendStatus(500);
+    }
+});
+
+programsRouter.post("/:id/rate", authMiddleware, async (req, res) => {
+    const rating = parseInt(req.body.rating);
+    if (!rating || rating < 1 || rating > 5) {
+        return res.status(400).json({ message: "Rating must be between 1 and 5" });
+    }
+    try {
+        await programsService.rateProgram(req.params.id, req.user.id, rating);
+        res.json({ message: "Rating saved" });
+    } catch (err) {
         console.log(err);
         res.sendStatus(500);
     }

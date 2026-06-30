@@ -2,12 +2,16 @@ const db = require("../db/connection.js");
 
 const getAllPrograms = () => {
     return new Promise ((resolve,reject)=>{
-        db.query(`SELECT * FROM programs`,(err,result)=>{
-            if(err){
-                return reject(err);
+        db.query(
+            `SELECT p.*, ROUND(AVG(pr.rating), 1) as avg_rating, COUNT(pr.id) as rating_count
+             FROM programs p
+             LEFT JOIN program_ratings pr ON pr.program_id = p.id
+             GROUP BY p.id`,
+            (err,result)=>{
+                if(err){ return reject(err); }
+                resolve(result);
             }
-            resolve(result);
-        });
+        );
     });
 };
 
@@ -49,10 +53,40 @@ const editProgram = (title,description,difficulty,id) => {
     })
 }
 
+const rateProgram = (programId, userId, rating) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            `INSERT INTO program_ratings (program_id, user_id, rating)
+             VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE rating = VALUES(rating)`,
+            [programId, userId, rating],
+            (err, res) => {
+                if (err) return reject(err);
+                resolve(res);
+            }
+        );
+    });
+};
+
+const getUserRatings = (userId) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            `SELECT program_id, rating FROM program_ratings WHERE user_id = ?`,
+            [userId],
+            (err, res) => {
+                if (err) return reject(err);
+                resolve(res);
+            }
+        );
+    });
+};
+
 module.exports = {
     getAllPrograms,
     getSingleProgram,
     createProgram,
     deleteProgram,
-    editProgram
+    editProgram,
+    rateProgram,
+    getUserRatings,
 }
