@@ -31,6 +31,11 @@ function NavbarComponent() {
                         Members
                     </Link>
                 </li>
+                <li>
+                    <Link to="/forum" className="text-gray-300 hover:text-white no-underline text-sm font-medium">
+                        Forum
+                    </Link>
+                </li>
             </ul>
             <div className="flex items-center gap-4">
                 {user && (

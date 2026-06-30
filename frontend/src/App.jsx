@@ -6,6 +6,8 @@ import ProgramsPage from '../Pages/ProgramsPage';
 import BlogPage from '../Pages/BlogPage';
 import BlogDetailPage from '../Pages/BlogDetailPage';
 import MembersPage from '../Pages/MembersPage';
+import ForumPage from '../Pages/ForumPage';
+import ForumThreadPage from '../Pages/ForumThreadPage';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -37,6 +39,16 @@ function AppRoutes() {
             <Route path="/members" element={
                 <ProtectedRoute>
                     <MembersPage />
+                </ProtectedRoute>
+            } />
+            <Route path="/forum" element={
+                <ProtectedRoute>
+                    <ForumPage />
+                </ProtectedRoute>
+            } />
+            <Route path="/forum/:id" element={
+                <ProtectedRoute>
+                    <ForumThreadPage />
                 </ProtectedRoute>
             } />
         </Routes>

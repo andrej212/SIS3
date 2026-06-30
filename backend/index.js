@@ -6,6 +6,7 @@ const programsRoute = require("./routes/programsRoute.js");
 const blogRoute = require("./routes/blogRoute.js");
 const authRoute = require("./routes/authRoute.js");
 const memberRoute = require("./routes/memberRoute.js");
+const forumRoute = require("./routes/forumRoute.js");
 
 const port = process.env.PORT || 5000;
 
@@ -31,6 +32,7 @@ app.use("/programs", programsRoute);
 app.use("/blogs", blogRoute);
 app.use("/auth", authRoute);
 app.use("/members", memberRoute);
+app.use("/forum", forumRoute);
 
 app.listen(port ,()=>{
     console.log("server runnning on port:"+ port);
